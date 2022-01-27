@@ -18,7 +18,7 @@ func generateSOAPRequest(req *Request) (*http.Request, error) {
 	// Using the var getTemplate to construct request
 	template, err := template.New("InputRequest").Parse(getTemplate)
 	if err != nil {
-		fmt.Println("Error while marshling object. %s ", err.Error())
+		fmt.Printf("Error while marshling object. %s ", err.Error())
 		return nil, err
 	}
 
@@ -26,7 +26,7 @@ func generateSOAPRequest(req *Request) (*http.Request, error) {
 	// Replacing the doc from template with actual req values
 	err = template.Execute(doc, req)
 	if err != nil {
-		fmt.Println("template.Execute error. %s ", err.Error())
+		fmt.Printf("template.Execute error. %s ", err.Error())
 		return nil, err
 	}
 
@@ -34,13 +34,13 @@ func generateSOAPRequest(req *Request) (*http.Request, error) {
 	encoder := xml.NewEncoder(buffer)
 	err = encoder.Encode(doc.String())
 	if err != nil {
-		fmt.Println("encoder.Encode error. %s ", err.Error())
+		fmt.Printf("encoder.Encode error. %s ", err.Error())
 		return nil, err
 	}
 
-	r, err := http.NewRequest(http.MethodPost, "http://www.thomas-bayer.com/axis2/services/BLZService", bytes.NewBuffer([]byte(doc.String())))
+	r, err := http.NewRequest(http.MethodPost, "http://www.thomas-bayer.com/axis2/services/BLZService", bytes.NewBuffer(doc.Bytes()))
 	if err != nil {
-		fmt.Println("Error making a request. %s ", err.Error())
+		fmt.Printf("Error making a request. %s ", err.Error())
 		return nil, err
 	}
 
